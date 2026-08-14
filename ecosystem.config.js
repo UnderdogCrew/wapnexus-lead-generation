@@ -1,6 +1,6 @@
 module.exports = {
     apps: [{
-        name: 'whatsapp-service',
+        name: 'lead-service',
         script: '/opt/python_apis/lead/bin/python',
         args: 'uvicorn app.main:app --reload --port 8002',
         instances: 1,
