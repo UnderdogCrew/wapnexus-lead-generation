@@ -39,9 +39,10 @@ cd frontend
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173). The Vite dev server proxies `/api/*` to the FastAPI app.
+Open [http://localhost:5173](http://localhost:5173). The dashboard calls
+[https://lead-api.wapnexus.com](https://lead-api.wapnexus.com/) (set `VITE_API_BASE_URL` in `frontend/.env` to override).
 
-API docs: [http://localhost:8000/docs](http://localhost:8000/docs).
+API docs: [https://lead-api.wapnexus.com/docs](https://lead-api.wapnexus.com/docs).
 
 ## Business search
 
@@ -56,10 +57,10 @@ Set `GOOGLE_PLACES_API_KEY` in `.env`.
 |-----------|-----|
 | Load list | `GET /leads` |
 | **Find businesses** | `POST /leads/search` `{ category, city, max_pages, run_ai }` |
-| Save draft / status / send | `PATCH /leads/{id}` |
+| Save status / send | `PATCH /leads/{id}` / `POST /leads/{id}/whatsapp` |
 
 - Default search scrapes Google Places and saves leads as `status: new`.
-- Check **Also classify + generate outreach drafts** to run the full AI pipeline (`run_ai: true`).
+- **Send WhatsApp message** sends the `grow_business_with_wapnexus` template to the lead's phone, with the business name in template variable `{{1}}`.
 
 ## Endpoints
 
@@ -76,7 +77,7 @@ Set `GOOGLE_PLACES_API_KEY` in `.env`.
 ### Find businesses
 
 ```bash
-curl -X POST http://localhost:8000/leads/search \
+curl -X POST https://lead-api.wapnexus.com/leads/search \
   -H "Content-Type: application/json" \
   -d '{"category": "salons", "city": "Surat", "max_pages": 1, "run_ai": false}'
 ```

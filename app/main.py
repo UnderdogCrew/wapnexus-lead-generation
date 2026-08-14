@@ -19,12 +19,13 @@ app = FastAPI(
     description="Scrape local businesses, classify with an LLM, and generate outreach drafts.",
     version="1.0.0",
     lifespan=lifespan,
+    servers=[{"url": "https://lead-api.wapnexus.com", "description": "Production"}],
 )
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
