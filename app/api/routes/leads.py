@@ -3,7 +3,9 @@ import asyncio
 import re
 
 from beanie import PydanticObjectId
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
+
+from app.auth import require_admin
 
 from app.models import Lead, LeadStatus
 from app.schemas import (
@@ -18,7 +20,7 @@ from app.services.google_places_scraper import collect_leads
 from app.services.pipeline import persist_leads, run_pipeline, search_and_persist_raw
 from app.services.wapnexus import send_template_message
 
-router = APIRouter(prefix="/leads", tags=["leads"])
+router = APIRouter(prefix="/leads", tags=["leads"], dependencies=[Depends(require_admin)])
 
 
 def _lead_out(lead: Lead) -> LeadOut:

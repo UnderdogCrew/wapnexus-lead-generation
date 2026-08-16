@@ -13,7 +13,7 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
-# fill in GOOGLE_PLACES_API_KEY and (optional) OPENAI_API_KEY
+# fill in GOOGLE_PLACES_API_KEY, ADMIN_PASSWORD, and (optional) OPENAI_API_KEY
 
 cd frontend && npm install && cd ..
 ```
@@ -39,7 +39,8 @@ cd frontend
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173). The dashboard calls
+Open [http://localhost:5173](http://localhost:5173) and sign in with
+`ADMIN_USERNAME` / `ADMIN_PASSWORD` from `.env`. The dashboard calls
 [https://lead-api.wapnexus.com](https://lead-api.wapnexus.com/) (set `VITE_API_BASE_URL` in `frontend/.env` to override).
 
 API docs: [https://lead-api.wapnexus.com/docs](https://lead-api.wapnexus.com/docs).
@@ -64,8 +65,12 @@ Set `GOOGLE_PLACES_API_KEY` in `.env`.
 
 ## Endpoints
 
+Lead and pipeline routes require `Authorization: Bearer <token>` from login.
+`/health` and `/auth/login` stay public.
+
 | Method | Path | Description |
 |--------|------|-------------|
+| `POST` | `/auth/login` | Admin login (`{ username, password }`) → `{ token }` |
 | `POST` | `/leads/search` | Scrape Google Places (+ optional AI) and upsert leads |
 | `POST` | `/pipeline/run` | Full scrape → classify → pain points → outreach |
 | `GET` | `/leads` | List/filter (`city`, `category`, `status`, `q`, `min_fit_score`) |
@@ -77,12 +82,30 @@ Set `GOOGLE_PLACES_API_KEY` in `.env`.
 ### Find businesses
 
 ```bash
+TOKEN=$(curl -s -X POST https://lead-api.wapnexus.com/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username": "admin", "password": "your-password"}' | python -c "import sys,json; print(json.load(sys.stdin)['token'])")
+
 curl -X POST https://lead-api.wapnexus.com/leads/search \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
   -d '{"category": "salons", "city": "Surat", "max_pages": 1, "run_ai": false}'
 ```
 
 Valid statuses: `new`, `classified`, `drafted`, `contacted`, `responded`, `converted`, `rejected`.
+
+## Admin login
+
+Set a single admin user in `.env`. Lead and pipeline APIs reject unauthenticated
+requests; the dashboard shows a sign-in screen until you log in.
+
+```
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=change-me
+AUTH_SECRET=change-me-to-a-long-random-string
+```
+
+The session token lasts 7 days. Use **Sign out** on the dashboard to clear it.
 
 ## Database
 

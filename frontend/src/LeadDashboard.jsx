@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
   Search, Phone, Globe, ChevronDown, Star, Mail, Loader2,
-  MessageSquare, MapPin, Filter, X, ArrowUpDown, MessageCircle,
+  MessageSquare, MapPin, Filter, X, ArrowUpDown, MessageCircle, LogOut,
 } from "lucide-react";
 import { API_BASE, listLeads, searchLeads, sendWhatsApp, updateLead as patchLead } from "./api";
 
@@ -363,7 +363,7 @@ function PlaceSearchBar({ onResults }) {
   );
 }
 
-export default function LeadDashboard() {
+export default function LeadDashboard({ onLogout }) {
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
@@ -458,7 +458,7 @@ export default function LeadDashboard() {
               Businesses scraped, scored, and drafted for WhatsApp API outreach.
             </p>
           </div>
-          <div className="flex shrink-0 gap-4 text-right">
+          <div className="flex shrink-0 items-start gap-4 text-right">
             <div>
               <div className="text-xl font-bold text-slate-900">{leads.length}</div>
               <div className="text-[11px] text-slate-400">total leads</div>
@@ -467,6 +467,16 @@ export default function LeadDashboard() {
               <div className="text-xl font-bold text-[#11B780]">{avgFit}</div>
               <div className="text-[11px] text-slate-400">avg fit score</div>
             </div>
+            {onLogout && (
+              <button
+                onClick={onLogout}
+                title="Sign out"
+                className="mt-1 flex items-center gap-1 rounded-md border border-slate-200 px-2 py-1.5 text-xs font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-700"
+              >
+                <LogOut size={12} />
+                Sign out
+              </button>
+            )}
           </div>
         </div>
 

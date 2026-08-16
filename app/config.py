@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     wapnexus_api_token: str = ""
     wapnexus_send_url: str = "https://api.wapnexus.com/send/message"
     wapnexus_template_name: str = "grow_business_with_wapnexus"
+    admin_username: str = "admin"
+    admin_password: str = ""
+    auth_secret: str = ""
 
 
 @lru_cache

@@ -1,11 +1,13 @@
 import asyncio
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
+
+from app.auth import require_admin
 
 from app.schemas import PipelineRunRequest, PipelineRunResponse
 from app.services.pipeline import persist_leads, run_pipeline
 
-router = APIRouter(prefix="/pipeline", tags=["pipeline"])
+router = APIRouter(prefix="/pipeline", tags=["pipeline"], dependencies=[Depends(require_admin)])
 
 
 @router.post("/run", response_model=PipelineRunResponse)

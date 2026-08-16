@@ -4,6 +4,16 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, Field
 
 
+class LoginRequest(BaseModel):
+    username: str = Field(..., min_length=1)
+    password: str = Field(..., min_length=1)
+
+
+class LoginResponse(BaseModel):
+    token: str
+    token_type: str = "bearer"
+
+
 class PipelineRunRequest(BaseModel):
     category: str = Field(..., examples=["salons"])
     city: str = Field(..., examples=["Surat"])
