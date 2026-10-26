@@ -32,6 +32,7 @@ class Lead(Document):
     phone: str | None = None
     email: str | None = None
     website: str | None = None
+    description: str | None = None
     rating: float | None = None
     review_count: int | None = None
     category_searched: str

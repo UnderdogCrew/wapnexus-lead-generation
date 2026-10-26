@@ -11,7 +11,7 @@ TEXT_SEARCH_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json"
 DETAILS_URL = "https://maps.googleapis.com/maps/api/place/details/json"
 DETAIL_FIELDS = (
     "name,formatted_address,formatted_phone_number,website,rating,"
-    "user_ratings_total,business_status,types"
+    "user_ratings_total,business_status,types,editorial_summary"
 )
 
 
@@ -71,6 +71,8 @@ def collect_leads(
         details = get_place_details(place_id) if place_id else {}
         time.sleep(sleep_between_details)
 
+        editorial = details.get("editorial_summary") or {}
+        print("=========", editorial)
         leads.append(
             {
                 "place_id": place_id,
@@ -78,6 +80,7 @@ def collect_leads(
                 "address": details.get("formatted_address") or place.get("formatted_address"),
                 "phone": details.get("formatted_phone_number"),
                 "website": details.get("website"),
+                "description": editorial.get("overview"),
                 "rating": details.get("rating") or place.get("rating"),
                 "review_count": details.get("user_ratings_total") or place.get("user_ratings_total"),
                 "business_status": details.get("business_status") or place.get("business_status"),
